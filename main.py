@@ -54,8 +54,7 @@ while True:
             ip_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["address"]
             mac_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["fabricMAC"]
 
-
-        print("nombre", name_local + "|" + "IP", ip_local + "|" + "MAC", mac_local)
+            print("nombre", name_local + "|" + "IP", ip_local + "|" + "MAC", mac_local)
 
         time.sleep(5)
 
