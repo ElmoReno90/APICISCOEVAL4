@@ -2,11 +2,11 @@ import json
 import requests
 import admpw
 
-sandbox = "https://sandboxapicdc.cisco.com"
+sandbox_url = "https://sandboxapicdc.cisco.com"
 
 
 def obtener_token(user, passwd):
-    url = sandbox + "/api/aaaLogin.json"
+    url = sandbox_url + "/api/aaaLogin.json"
     body = {
         "aaaUser": {
             "attributes": {
@@ -26,9 +26,8 @@ def obtener_token(user, passwd):
 
 token = obtener_token(admpw.user, admpw.passwd)
 
-# GET https://apic-ip-address/api/mo/topology/pod-1/node-1/sys/ch/bslot/board/sensor-3.json
 
-def top_system():
+def Check_System_State():
     cabecera = {
         "Content-Type": "application/json"
     }
@@ -37,13 +36,21 @@ def top_system():
     }
 
     requests.packages.urllib3.disable_warnings()
-    respuesta = requests.get(sandbox + "/api/class/topSystem.json", headers=cabecera, cookies=galletita, verify=False)
+    respuesta = requests.get(sandbox_url + "/api/class/topSystem.json", headers=cabecera, cookies=galletita, verify=False)
 
     total_nodos = int(respuesta.json()["totalCount"])
-    print("la cantidad de nodos es", total_nodos)
-    if total_nodos == 3:
-        print("La Red No tiene Intrusos")
-    else:
-        print("Hay un dispositivo adicional en la Red, posible Intruso")
+    print("La cantidad de dispositivos es", total_nodos)
 
-top_system()
+    if total_nodos == 4: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
+
+        print("La red tiene operativo todos los dispositivos, no se detectan elementos adicionales")
+    else:
+        print("!!!POSIBLE INTRUSO!!!! Hay un dispositivo adicional en la Red - Identifique los siguientes dispositivos")
+
+    for i in range(0, total_nodos):
+        name_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["name"]
+        ip_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["address"]
+        mac_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["fabricMAC"]
+
+        print("nombre", name_local + "|" + "IP", ip_local + "|" + "MAC", mac_local)
+Check_System_State()
