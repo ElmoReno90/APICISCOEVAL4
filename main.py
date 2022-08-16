@@ -1,9 +1,10 @@
 import json
 import requests
 import admpw
+import schedule
+import time
 
 sandbox_url = "https://sandboxapicdc.cisco.com"
-
 
 def obtener_token(user, passwd):
     url = sandbox_url + "/api/aaaLogin.json"
@@ -41,11 +42,11 @@ def Check_System_State():
     total_nodos = int(respuesta.json()["totalCount"])
     print("La cantidad de dispositivos es", total_nodos)
 
-    if total_nodos == 4: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
+    if total_nodos == 3: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
 
         print("La red tiene operativo todos los dispositivos, no se detectan elementos adicionales")
     else:
-        print("!!!POSIBLE INTRUSO!!!! Hay un dispositivo adicional en la Red - Identifique los siguientes dispositivos")
+        print("Revisar dispositivos disponibles en la Red - Se detectan cambios")
 
     for i in range(0, total_nodos):
         name_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["name"]
@@ -53,4 +54,12 @@ def Check_System_State():
         mac_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["fabricMAC"]
 
         print("nombre", name_local + "|" + "IP", ip_local + "|" + "MAC", mac_local)
+
+        #schedule.every(5).minutes.do(Check_System_State)
+
+        #while True:
+            #schedule.run_pending()
+            #time.sleep(5)
+
+
 Check_System_State()
