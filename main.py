@@ -27,39 +27,40 @@ def obtener_token(user, passwd):
 
 token = obtener_token(admpw.user, admpw.passwd)
 
-
-def Check_System_State():
-    cabecera = {
+while True:
+    def Check_System_State():
+        cabecera = {
         "Content-Type": "application/json"
-    }
-    galletita = {
+
+        }
+        galletita = {
         "APIC-Cookie": obtener_token(admpw.user, admpw.passwd)
     }
 
-    requests.packages.urllib3.disable_warnings()
-    respuesta = requests.get(sandbox_url + "/api/class/topSystem.json", headers=cabecera, cookies=galletita, verify=False)
+        requests.packages.urllib3.disable_warnings()
+        respuesta = requests.get(sandbox_url + "/api/class/topSystem.json", headers=cabecera, cookies=galletita, verify=False)
 
-    total_nodos = int(respuesta.json()["totalCount"])
-    print("La cantidad de dispositivos es", total_nodos)
+        total_nodos = int(respuesta.json()["totalCount"])
+        print("La cantidad de dispositivos es", total_nodos)
 
-    if total_nodos == 3: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
+        if total_nodos == 4: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
 
-        print("La red tiene operativo todos los dispositivos, no se detectan elementos adicionales")
-    else:
-        print("Revisar dispositivos disponibles en la Red - Se detectan cambios")
+            print("La red tiene operativo todos los dispositivos, no se detectan elementos adicionales")
+        else:
+            print("Revisar dispositivos disponibles en la Red - Se detectan cambios")
 
-    for i in range(0, total_nodos):
-        name_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["name"]
-        ip_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["address"]
-        mac_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["fabricMAC"]
+        for i in range(0, total_nodos):
+            name_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["name"]
+            ip_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["address"]
+            mac_local = respuesta.json()["imdata"][i]["topSystem"]["attributes"]["fabricMAC"]
+
 
         print("nombre", name_local + "|" + "IP", ip_local + "|" + "MAC", mac_local)
 
-        #schedule.every(5).minutes.do(Check_System_State)
-
-        #while True:
-            #schedule.run_pending()
-            #time.sleep(5)
+        time.sleep(5)
 
 
-Check_System_State()
+
+
+
+    Check_System_State()
