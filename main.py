@@ -45,7 +45,7 @@ while True:
 
         if total_nodos == 4: # !!! Este numero puede variar, al momento del desarrollo estaban operativos 4 nodos.
 
-            print("La red tiene operativo todos los dispositivos, no se detectan elementos adicionales")
+            print("La red tiene operativo todos los dispositivos, no se detectan cambios en la red")
         else:
             print("Revisar dispositivos disponibles en la Red - Se detectan cambios")
 
